@@ -8,4 +8,38 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = "file:.data.db"
-}..
+}
+
+model User {
+  id         Int        @id @default(autoincrement())
+  email      String
+  password   String
+  name       String
+  properties Property[]
+}
+
+model Property {
+  id        Int      @id @default(autoincrement())
+  city      String
+  name    String?
+  available Boolean
+  price     Int
+  decription String?
+  images    Image[]
+  users     User[]
+  reviews    Review[]
+}
+
+model Image {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  image String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  comment    String
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
