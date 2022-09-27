@@ -1,15 +1,15 @@
-import express from "express"
-import cors from "cors"
-import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import env from "dotenv";
+import express from 'express'
+import cors from 'cors'
+import bcrypt from 'bcryptjs'
+import { PrismaClient } from '@prisma/client'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
 
-const app=express()
+const app = express()
 app.use(cors())
 app.use(express.json())
-const prisma= new PrismaClient()
-const port=4000
+const prisma = new PrismaClient()
+const port = 4000
 
 
 app.get(`/property`, async (req,res)=>{
@@ -24,6 +24,8 @@ res.status(400).send({error:error.message})
 
 })
 
-app.listen(port,()=>{
-    console.log(`App running at: http:/localhost:${port}`)
+
+app.listen(port, () => {
+  console.log(`App running: http://localhost:${port}`)
 })
+
