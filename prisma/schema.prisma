@@ -23,6 +23,7 @@ model Property {
   city      String
   name    String?
   available Boolean
+  type String?
   price     Int
   decription String?
   images    Image[]
