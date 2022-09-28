@@ -14,8 +14,9 @@ const port = 4000;
 app.get(`/property`, async (req, res) => {
   try {
     const properties = await prisma.property.findMany({
-      include: { images: true},
+      include: { images: true },
     });
+
     res.send(properties);
   } catch (error) {
     //@ts-ignore
@@ -23,24 +24,38 @@ app.get(`/property`, async (req, res) => {
   }
 });
 
-app.get('/property/:id', async (req, res) => {
-    const property = await prisma.property.findUnique({
-        where:{ id: Number(req.params.id)},
-        include: {images:true, reviews:true}
-    })
+app.get(`/property/type/:type`, async (req, res) => {
+  try {
+    const properties = await prisma.property.findMany({
+      include: { images: true },
+      where: {
+        type: req.params.type,
+      },
+    });
 
-    if(property){
-        res.send(property)
-    } else {
-        res.status(404).send({error: 'Property not found'})
-    }
-})
+    res.send(properties);
+  } catch (error) {
+    //@ts-ignore
+    res.status(400).send({ error: error.message });
+  }
+});
 
+app.get("/property/:id", async (req, res) => {
+  const property = await prisma.property.findUnique({
+    where: { id: Number(req.params.id) },
+    include: { images: true, reviews: true },
+  });
+
+  if (property) {
+    res.send(property);
+  } else {
+    res.status(404).send({ error: "Property not found" });
+  }
+});
 
 app.listen(port, () => {
-  console.log(`App running: http://localhost:${port}`)
-})
-
+  console.log(`App running: http://localhost:${port}`);
+});
 
 // app.post('/property/:id/reserve', async (req, res) => {
 //     await prisma.
@@ -49,4 +64,3 @@ app.listen(port, () => {
 // app.get('/user/property' , async (req, res) => {
 //     const user = await prisma.user.
 // })
-

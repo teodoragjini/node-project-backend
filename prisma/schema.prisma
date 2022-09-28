@@ -16,25 +16,26 @@ model User {
   password   String
   name       String
   properties Property[]
+  reviews     Review[]
 }
 
 model Property {
-  id        Int      @id @default(autoincrement())
-  city      String
-  name    String?
-  available Boolean
-  type String?
-  price     Int
+  id         Int      @id @default(autoincrement())
+  city       String
+  name       String?
+  available  Boolean
+  type       String?
+  price      Int
   decription String?
-  images    Image[]
-  users     User[]
+  images     Image[]
+  users      User[]
   reviews    Review[]
 }
 
 model Image {
   id         Int      @id @default(autoincrement())
   propertyId Int
-  image String
+  image      String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
@@ -42,5 +43,7 @@ model Review {
   id         Int      @id @default(autoincrement())
   comment    String
   propertyId Int
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade,onUpdate: Cascade)
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
