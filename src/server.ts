@@ -29,6 +29,7 @@ app.get(`/property/type/:type`, async (req, res) => {
     const properties = await prisma.property.findMany({
       include: { images: true },
       where: {
+        //@ts-ignore
         type: req.params.type,
       },
     });
@@ -53,9 +54,32 @@ app.get("/property/:id", async (req, res) => {
   }
 });
 
+app.post('/sign-up', async (req, res) => {
+    try{
+      const user= await prisma.user.create({data:{email:req.body.email, name:req.body.name,password:bcrypt.hashSync(req.body.password)}})
+      res.send(user)
+    }catch(error){
+      //@ts-ignore
+      res.status(400).send({error:error.message})
+    }
+})
+app.post('/sign-in', async (req, res) => {
+      //@ts-ignore
+const user= await prisma.user.findUnique({where:{email:req.body.email}})
+if(user&& bcrypt.compareSync(req.body.password, user.password)){
+  res.send(user)
+}else{
+res.status(400).send({error:"Invalid combination paswword/email"})
+}
+})
+
+
+
 app.listen(port, () => {
   console.log(`App running: http://localhost:${port}`);
 });
+
+
 
 // app.post('/property/:id/reserve', async (req, res) => {
 //     await prisma.
