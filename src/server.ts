@@ -54,6 +54,31 @@ app.get("/property/:id", async (req, res) => {
   }
 });
 
+app.get(`/users`, async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      include: { properties: true },
+    });
+    res.send(users);
+  } catch (error) {
+    //@ts-ignore
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/user/:id", async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: Number(req.params.id)},
+    include: { properties: true },
+  });
+
+  if (user) {
+    res.send(user);
+  } else {
+    res.status(404).send({ error: "User not found" });
+  }
+});
+
 app.post('/sign-up', async (req, res) => {
     try{
       const user= await prisma.user.create({data:{email:req.body.email, name:req.body.name,password:bcrypt.hashSync(req.body.password)}})
