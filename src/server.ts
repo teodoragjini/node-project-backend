@@ -77,7 +77,8 @@ app.get("/property/:id", async (req, res) => {
 });
 
 app.post("/property/:id/reserve", async (req, res) => {
-    const user = await getCurrentUser('sdfgsdfgdfsg')
+    //@ts-ignore
+    const user = await getCurrentUser(req.headers.authorization)
 
     await prisma.property.update({
         where: {id: Number(req.params.id)},
