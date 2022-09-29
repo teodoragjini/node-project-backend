@@ -98,6 +98,25 @@ app.post("/property/:id/reserve", async (req, res) => {
     res.send()
 })
 
+app.post('/reviews', async(req, res) =>{
+    const review = await prisma.review.create({
+        data:{
+            ...req.body,
+            user:{
+                connect:{
+                    id:Number(1)
+                },
+            },
+            property:{
+                connect:{
+                    id:Number(req.query.property)
+                },
+            },
+        }
+    })
+    res.send(review)
+})
+
 app.post('/sign-up', async (req, res) => {
     try {
         const match = await prisma.user.findUnique({
