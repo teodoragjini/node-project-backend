@@ -143,24 +143,27 @@ app.post("/property/:id/reserve", async (req, res) => {
     res.send()
 })
 
-app.post('/reviews', async(req, res) =>{
+app.post('/reviewsn', async(req, res) =>{
     const review = await prisma.review.create({
         data:{
             ...req.body,
             user:{
                 connect:{
-                    id:Number(1)
+                    id:Number(req.body.id)
                 },
             },
             property:{
                 connect:{
                     id:Number(req.query.property)
+                    // id:Number(req.body.id)
                 },
             },
         }
     })
     res.send(review)
 })
+
+
 
 app.post('/sign-up', async (req, res) => {
     try {
