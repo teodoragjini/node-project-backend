@@ -36,7 +36,7 @@ app.get(`/property`, async (req, res) => {
             where: {
                 available: true,
             },
-            include: {images: true},
+            include: {images: true, users:true},
         });
 
         res.send(properties);
@@ -66,7 +66,7 @@ app.get(`/property/type/:type`, async (req, res) => {
 app.get("/property/:id", async (req, res) => {
     const property = await prisma.property.findUnique({
         where: {id: Number(req.params.id)},
-        include: {images: true, reviews: true},
+        include: {images: true, reviews: true, users:true},
     });
 
     if (property) {
@@ -75,6 +75,51 @@ app.get("/property/:id", async (req, res) => {
         res.status(404).send({error: "Property not found"});
     }
 });
+
+
+app.get(`/users`, async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      include: { properties: true },
+    });
+    res.send(users);
+  } catch (error) {
+    //@ts-ignore
+    res.status(400).send({ error: error.message });
+  }
+});
+
+app.get("/user/:id", async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: Number(req.params.id)},
+    include: { properties: true },
+  });
+
+  if (user) {
+    res.send(user);
+  } else {
+    res.status(404).send({ error: "User not found" });
+  }
+});
+
+app.post('/sign-up', async (req, res) => {
+    try{
+      const user= await prisma.user.create({data:{email:req.body.email, name:req.body.name,password:bcrypt.hashSync(req.body.password)}})
+      res.send(user)
+    }catch(error){
+      //@ts-ignore
+      res.status(400).send({error:error.message})
+    }
+})
+app.post('/sign-in', async (req, res) => {
+      //@ts-ignore
+const user= await prisma.user.findUnique({where:{email:req.body.email}})
+if(user&& bcrypt.compareSync(req.body.password, user.password)){
+  res.send(user)
+}else{
+res.status(400).send({error:"Invalid combination paswword/email"})
+}
+})
 
 app.post("/property/:id/reserve", async (req, res) => {
     //@ts-ignore
@@ -159,6 +204,6 @@ app.post('/sign-in', async (req, res) => {
 
 app.listen(port, () => {
     console.log(`App running: http://localhost:${port}`);
-});
+})
 
 // comment
