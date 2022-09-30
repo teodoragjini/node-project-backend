@@ -206,6 +206,6 @@ app.post('/sign-in', async (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`App running: http://localhost:${port}`);
+    console.log(`App running at: http://localhost:${port}`);
 })
 
