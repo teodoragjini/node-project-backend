@@ -122,34 +122,31 @@ res.status(400).send({error:"Invalid combination paswword/email"})
 })
 
 app.post("/property/:id/reserve", async (req, res) => {
-    //@ts-ignore
-    const user = await getCurrentUser(req.headers.authorization)
-
-    await prisma.property.update({
+    //const user = await getCurrentUser(req.headers.authorization)
+    const property = await prisma.property.findUnique({
         where: {id: Number(req.params.id)},
-        data: {
-            available: false,
-            users: {
-                connectOrCreate: {
-                    //@ts-ignore
-                    where: {userId: user.id},
-                    //@ts-ignore
-                    create: {userId: user.id}
-                }
-            }
-        },
     })
 
-    res.send()
+    if (property) {
+        await prisma.property.update({
+            where: {id: Number(req.params.id)},
+            data: {
+                //@ts-ignore
+                available: !property.available
+            },
+        })
+    }
+
+    res.send(property)
 })
 
-app.post('/reviewsn', async(req, res) =>{
+app.post('/reviews', async(req, res) =>{
     const review = await prisma.review.create({
         data:{
             ...req.body,
             user:{
                 connect:{
-                    id:Number(req.body.id)
+                    id: 1
                 },
             },
             property:{
